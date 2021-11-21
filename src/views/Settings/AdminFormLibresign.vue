@@ -154,7 +154,7 @@ export default {
 				return
 			} catch (e) {
 				console.error(e)
-				showError(t('libresign', 'Could not generate certificate.'))
+				showError(t('libresign', 'Could not generate certificate.') + "\n" + e.response.data.message)
 				this.submitLabel = t('libresign', 'Generate root certificate.')
 
 			}
