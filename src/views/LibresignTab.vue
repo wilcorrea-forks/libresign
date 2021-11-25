@@ -65,13 +65,8 @@
 			<Request v-show="requestShow"
 				ref="request"
 				:fileinfo="fileInfo"
-				@request:signatures="requestSignatures">
-				<template slot="actions">
-					<button class="lb-ls-return-button" @click="option('request')">
-						{{ t('libresign', 'Return') }}
-					</button>
-				</template>
-			</Request>
+				@cancel="option('request')"
+				@request:signatures="requestSignatures" />
 
 			<div v-if="signaturesShow" id="signers" class="container-signers">
 				<div class="content-signers">

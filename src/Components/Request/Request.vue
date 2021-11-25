@@ -1,13 +1,5 @@
 <template>
 	<div class="form-rs-container">
-		<form @submit="e => e.preventDefault()">
-			<input v-model="email" type="email" :placeholder="t('libresign', 'Email')">
-			<input v-model="description" type="text" :placeholder=" t('libresign', 'Description')">
-			<button :disabled="!hasEmail" class="primary btn-inc" @click="addUser">
-				{{ t('libresign', 'Add') }}
-			</button>
-		</form>
-
 		<div v-if="hasUsers" class="list-users-selected">
 			<div id="title">
 				<span>{{ t('libresign', 'Users') }}</span>
@@ -23,6 +15,46 @@
 			</button>
 		</div>
 		<slot name="actions" />
+
+		<template v-if="showModal">
+			<div class="oc-dialog"
+				tabindex="-1"
+				role="dialog"
+				style="display: inline-block; position: fixed; width: 600px; height: 500px;">
+				<h2 class="oc-dialog-title">
+					{{ t('libresign', 'Add User on Request') }}
+				</h2>
+				<a class="oc-dialog-close" @click="showModal = false" />
+				<div id="oc-dialog-filepicker-content" class="oc-dialog-content" style="height: calc(100% - 102px);">
+					<form @submit="e => e.preventDefault()">
+						<div>
+							<input v-model="email" type="email" :placeholder="t('libresign', 'Email')">
+							<small>{{ t('libresign', '* The email is required') }}</small>
+						</div>
+						<div>
+							<input v-model="description" type="text" :placeholder=" t('libresign', 'Description')">
+						</div>
+					</form>
+				</div>
+				<div class="oc-dialog-buttonrow onebutton aside">
+					<button class="btn-inc" @click="showModal = false">
+						{{ t('libresign', 'Cancel') }}
+					</button>
+					<button :disabled="!hasEmail" class="primary btn-inc" @click="addUser">
+						{{ t('libresign', 'Add') }}
+					</button>
+				</div>
+			</div>
+		</template>
+
+		<div class="form-rs-container__buttons">
+			<button class="btn-inc" @click="$emit('cancel')">
+				{{ t('libresign', 'Cancel') }}
+			</button>
+			<button v-if="!showModal" class="btn-inc primary" @click="showModal = true">
+				{{ t('libresign', 'Add User') }}
+			</button>
+		</div>
 	</div>
 </template>
 
@@ -51,6 +83,7 @@ export default {
 			values: [],
 			email: '',
 			description: '',
+			showModal: false,
 		}
 	},
 	computed: {
@@ -85,6 +118,7 @@ export default {
 		clearForm() {
 			this.email = ''
 			this.description = ''
+			this.showModal = false
 		},
 		async send(param) {
 			this.$emit('request:signatures', this.values)
